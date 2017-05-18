@@ -7,8 +7,8 @@ Atm_traffic_assistance traffic_assistance;
 
 void setup() {
 
-  // Serial.begin( 9600 );
-  // traffic_assistance.trace( Serial );
+  Serial.begin( 9600 );
+  traffic_assistance.trace( Serial );
 
   traffic_assistance.begin();
 
