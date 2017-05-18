@@ -1,5 +1,7 @@
 #include "Atm_traffic_assistance.h"
 
+long matchTimeMs = 5000;
+
 /* Add optional parameters for the state machine to begin()
  * Add extra initialization code
  */
@@ -7,10 +9,10 @@
 Atm_traffic_assistance& Atm_traffic_assistance::begin() {
   // clang-format off
   const static state_t state_table[] PROGMEM = {
-    /*                     ON_ENTER  ON_LOOP   ON_EXIT  EVT_PUSH_TRUCK_FINISHED   EVT_START  ELSE */
-    /*       IDLE */             -1,      -1, EXT_IDLE,                      -1, PUSH_TRUCK,   -1,
-    /* PUSH_TRUCK */ ENT_PUSH_TRUCK,      -1,       -1,                FINISHED,         -1,   -1,
-    /*   FINISHED */   ENT_FINISHED,      -1,       -1,                      -1,         -1,   -1,
+    /*                     ON_ENTER  ON_LOOP   ON_EXIT  EVT_PUSH_TRUCK_FINISHED   EVT_START  EVT_MATCH_END  ELSE */
+    /*      IDLE  */             -1,      -1, EXT_IDLE,                      -1, PUSH_TRUCK,            -1,   -1,
+    /* PUSH_TRUCK */ ENT_PUSH_TRUCK,      -1,       -1,                FINISHED,         -1,      FINISHED,   -1,
+    /*   FINISHED */   ENT_FINISHED,      -1,       -1,                      -1,         -1,            -1,   -1,
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
@@ -29,6 +31,8 @@ int Atm_traffic_assistance::event( int id ) {
   return 0;
 }
 
+Atm_timer timer;
+
 /* Add C++ code for each action
  * This generates the 'output' for the state machine
  */
@@ -36,6 +40,8 @@ int Atm_traffic_assistance::event( int id ) {
 void Atm_traffic_assistance::action( int id ) {
   switch ( id ) {
     case EXT_IDLE:
+      timer.trace( Serial );
+      timer.begin( matchTimeMs ).start().onFinish(*this, EVT_MATCH_END);
       return;
     case ENT_PUSH_TRUCK:
       return;
@@ -85,7 +91,7 @@ Atm_traffic_assistance& Atm_traffic_assistance::start() {
 
 Atm_traffic_assistance& Atm_traffic_assistance::trace( Stream & stream ) {
   Machine::setTrace( &stream, atm_serial_debug::trace,
-    "TRAFFIC_ASSISTANCE\0EVT_PUSH_TRUCK_FINISHED\0EVT_START\0ELSE\0IDLE\0PUSH_TRUCK\0FINISHED" );
+    "TRAFFIC_ASSISTANCE\0EVT_PUSH_TRUCK_FINISHED\0EVT_START\0EVT_MATCH_END\0ELSE\0IDLE\0PUSH_TRUCK\0FINISHED" );
   return *this;
 }
 

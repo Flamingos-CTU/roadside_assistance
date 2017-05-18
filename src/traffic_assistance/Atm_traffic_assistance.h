@@ -6,7 +6,7 @@ class Atm_traffic_assistance: public Machine {
 
  public:
   enum { IDLE, PUSH_TRUCK, FINISHED }; // STATES
-  enum { EVT_PUSH_TRUCK_FINISHED, EVT_START, ELSE }; // EVENTS
+  enum { EVT_PUSH_TRUCK_FINISHED, EVT_START, EVT_MATCH_END, ELSE }; // EVENTS
   Atm_traffic_assistance( void ) : Machine() {};
   Atm_traffic_assistance& begin( void );
   Atm_traffic_assistance& trace( Stream & stream );
