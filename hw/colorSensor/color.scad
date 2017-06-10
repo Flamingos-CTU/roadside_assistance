@@ -1,6 +1,6 @@
 $fn=40;
-//color([1,0,0]) colorbox();
-//color([0,0,1]) topcone();
+color([1,0,0]) colorbox();
+color([0,0,1]) topcone();
 lid();
 
 module colorbox(){
@@ -25,6 +25,7 @@ module lid(){
 difference(){translate([-100+8,-48/2,0])import("bb-sen-uni-bt-c.stl");
     cylinder(h=20,d=32);
     translate([0,-20,(8-1.2)/2-0.205])cube([25,10,8-1.2],center=true);
+    cylinder(d=36,h=7.1);
     }
 }
     
