@@ -1,22 +1,22 @@
-$fn=20;
+$fn=40;
 //color([1,0,0]) colorbox();
-color([0,0,1]) topcone();
-//lid();
+//color([0,0,1]) topcone();
+lid();
 
 module colorbox(){
     difference(){union(){
     basebox();
-    translate([(28.4-3.2)/2,(28.7-3.2)/2,2])cylinder(d=6,h=4,center=true);
-    translate([(28.4-3.2)/2,-(28.7-3.2)/2,2])cylinder(d=6,h=4,center=true);
-    translate([-(28.4-3.2)/2,(28.7-3.2)/2,2])cylinder(d=6,h=4,center=true);
-    translate([-(28.4-3.2)/2,-(28.7-3.2)/2,2])cylinder(d=6,h=4,center=true);
+    translate([(28.4-3.2)/2,(28.7-3.2)/2,3/2])cylinder(d=6,h=3,center=true);
+    translate([(28.4-3.2)/2,-(28.7-3.2)/2,3/2])cylinder(d=6,h=3,center=true);
+    translate([-(28.4-3.2)/2,(28.7-3.2)/2,3/2])cylinder(d=6,h=3,center=true);
+    translate([-(28.4-3.2)/2,-(28.7-3.2)/2,3/2])cylinder(d=6,h=3,center=true);
     }
     translate([(28.4-3.2)/2,(28.7-3.2)/2,2])cylinder(d=2.4,h=5,center=true);
     translate([(28.4-3.2)/2,-(28.7-3.2)/2,2])cylinder(d=2.4,h=5,center=true);
     translate([-(28.4-3.2)/2,(28.7-3.2)/2,2])cylinder(d=2.4,h=5,center=true);
     translate([-(28.4-3.2)/2,-(28.7-3.2)/2,2])cylinder(d=2.4,h=5,center=true);
-    translate([0,-(28.7-3.2)/2,0])cube([14,2,4],center=true);
-    translate([0,(28.7-3.2)/2,0])cube([14,2,4],center=true);
+    translate([0,-(28.7-3.2)/2,0])cube([14,3,4],center=true);
+    translate([0,(28.7-3.2)/2,0])cube([14,3,4],center=true);
     }
 }
 
@@ -29,17 +29,20 @@ difference(){translate([-100+8,-48/2,0])import("bb-sen-uni-bt-c.stl");
 }
     
 module topcone(){
+    intersection(){
     translate([0,0,5])difference()
     {union(){
-        translate([0,0,0.6])cylinder(d=34,h=1.2,center=true);
+        translate([0,0,0.45])cylinder(d=34,h=0.9,center=true);
         translate([0,0,25.25/2])cylinder(d=31,h=24+1.25,center=true);
         }
         translate([0,0,25.25/2])cylinder(d=31-2.4,h=24+1.25+0.2,center=true);
         }
+        linear_extrude(height=400)scale([0.95,0.95,1])translate([-56/2,-48/2,0])import("molebox.dxf",layer="innerbox");
+    }
     }
 module basebox(){
     translate([-56/2,-48/2,0])difference(){linear_extrude(height=8) import("molebox.dxf",layer="0",convexity=10);
-translate([0,0,1.25])linear_extrude(height=8) import("molebox.dxf",layer="innerbox",convexity=10);
+translate([0,0,1.25])linear_extrude(height=8) import("molebox.dxf",layer="innerbox");
 translate([0,0,6.35])linear_extrude(height=8) import("molebox.dxf",layer="lid",convexity=10);
     translate([4,4,4]) doublehole();
     translate([4,4+16,4]) doublehole();
