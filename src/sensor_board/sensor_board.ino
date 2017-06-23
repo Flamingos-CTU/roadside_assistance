@@ -49,7 +49,8 @@ void loop() {
   sens_vals[LML] = analogRead(0)>>2;
   sens_vals[LMR] = analogRead(4)>>2;
   sens_vals[LC] = analogRead(2)>>2;
-
+  
+  long send_start = millis();
   // send the data
   sensor_serial.print("ST");
   for(int i=0; i<NOS; i++){
@@ -60,7 +61,11 @@ void loop() {
 
   //debugging output... length of measurement
   Serial.print("measure time: ");
-  Serial.println(millis()-scan_start,DEC);
+  Serial.println(send_start-scan_start,DEC);
+
+  //debugging output... length of measurement
+  Serial.print("sending time: ");
+  Serial.println(millis()-send_start,DEC);
 
   // wait for next period start
   while(millis()< (scan_start + scan_period));
