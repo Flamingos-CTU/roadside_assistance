@@ -52,7 +52,17 @@ void on_sensor_data(int idx, int v, int up)
       Serial.print(" ");
       Serial.print(sensor_board.arg(3));
       Serial.print(" ");
-      Serial.println(sensor_board.arg(4));
+      Serial.print(sensor_board.arg(4));
+      Serial.print(" ");
+      Serial.print(sensor_board.arg(5));
+      Serial.print(" ");
+      Serial.print(sensor_board.arg(6));
+      Serial.print(" ");
+      Serial.print(sensor_board.arg(7));
+      Serial.print(" ");
+      Serial.print(sensor_board.arg(8));
+      Serial.print(" ");
+      Serial.println(sensor_board.arg(9));
   }
 }
 
