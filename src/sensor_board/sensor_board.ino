@@ -6,10 +6,10 @@ constexpr long scan_period = 100; //period of measurement of data
 // SW serial to main control board
 SoftwareSerial sensor_serial(4, 5); // RX, TX, SW serial could work only with RX mapped to pin 8, 9, 10, 11
 
-Ultrasonic ul(6, 7);  // left ultrasonic sensor HC-04
-Ultrasonic ur(8, 9);  // right ultrasonic sensor HC-04
-Ultrasonic ub(10, 11);  // back ultrasonic sensor HC-04
-Ultrasonic uf(12, 13);  // front ultrasonic sensor HC-04
+Ultrasonic ul(6, 7, 10000UL);  // left ultrasonic sensor HC-04
+Ultrasonic ur(8, 9, 10000UL);  // right ultrasonic sensor HC-04
+Ultrasonic ub(10, 11, 10000UL);  // back ultrasonic sensor HC-04
+Ultrasonic uf(12, 13, 10000UL);  // front ultrasonic sensor HC-04
 
 enum {
   UF,       // Front ulstrasound sensor,
