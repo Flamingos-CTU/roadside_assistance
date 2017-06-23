@@ -14,6 +14,23 @@ SoftwareSerial sensor_serial(8, 9); // RX, TX, SW serial to main control board
 char sensor_buffer[128];
 Atm_command sensor_board;
 
+constexpr uint8_t obstacleThresh = 40; // obstackle detected if closer than this distance in cm
+constexpr uint8_t blackThresh = 100; // black color when sensor output above this value 
+
+struct sens_environment{
+  bool obstacleFront;
+  bool obstacleLeft;
+  bool obstacleBack;
+  bool obstacleRight;
+  bool blackLM; // line sensor middle detecting black
+  bool blackLL; // line sensor front left detecting black
+  bool blackLR; // line sensor front right detecting black
+  bool blackLML;// line sensor front middle left detecting black
+  bool blackLMR;// line sensor front middle right detecting black
+  bool blackLRL;// line sensor rear middle left detecting black
+  bool blackLRR;// line sensor rear middle right detecting black
+  } environment;
+
 enum {
   ST,
   UF,       // Front ulstrasound sensor,
@@ -25,44 +42,67 @@ enum {
   LML,      // middle left,
   LMR,      // middle right,
   LC,       // center.
+  LRL,      // rear left
+  LRR       // rear right
 };
 
-constexpr char sensor_list[] = "ST UF UB UL UR LL LR LML LMR LC";
+constexpr char sensor_list[] = "ST";
 
 void on_sensor_data(int idx, int v, int up)
 {
-  uint8_t val = atoi(sensor_board.arg(1));
+  static uint8_t loopCounter=0;
   switch(v) {
     case ST:
-    case UF:
-    case UB:
-    case UL:
-    case UR:
-    case LL:
-    case LR:
-    case LML:
-    case LMR:
-    case LC:
-      Serial.print("CMD ");
-      Serial.print(v, DEC);
-      Serial.print(" VALS: ");
-      Serial.print(sensor_board.arg(1));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(2));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(3));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(4));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(5));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(6));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(7));
-      Serial.print(" ");
-      Serial.print(sensor_board.arg(8));
-      Serial.print(" ");
-      Serial.println(sensor_board.arg(9));
+        environment.obstacleFront = atoi(sensor_board.arg(UF)) > 0 && atoi(sensor_board.arg(UF)) < obstacleThresh;
+        environment.obstacleBack = atoi(sensor_board.arg(UB)) > 0 && atoi(sensor_board.arg(UB)) < obstacleThresh;
+        environment.obstacleLeft = atoi(sensor_board.arg(UL)) > 0 && atoi(sensor_board.arg(UL)) < obstacleThresh;
+        environment.obstacleRight = atoi(sensor_board.arg(UR)) > 0 && atoi(sensor_board.arg(UR)) < obstacleThresh;
+        environment.blackLM = atoi(sensor_board.arg(LC)) > blackThresh;
+        environment.blackLL = atoi(sensor_board.arg(LL)) > blackThresh;
+        environment.blackLR = atoi(sensor_board.arg(LR)) > blackThresh;
+        environment.blackLML = atoi(sensor_board.arg(LML)) > blackThresh;
+        environment.blackLMR = atoi(sensor_board.arg(LMR)) > blackThresh;        
+        uint8_t right = analogRead(3) >> 2;
+        uint8_t left = analogRead(2) >> 2;
+        environment.blackLRR = right > blackThresh;
+        environment.blackLRL = left > blackThresh;
+        if(((++loopCounter) & 0x1F) == 0 ){
+            Serial.println();
+            Serial.println("sensor_board:\tUF\tUB\tUL\tUR\tLL\tLR\tLML\tLMR\tLC\tLRL\tLRR");
+            Serial.print("raw_values:");
+            for(uint8_t i=1;i<=9;i++){
+                Serial.print("\t");
+                Serial.print(sensor_board.arg(i));
+            }
+            Serial.print("\t");
+            Serial.print(left,DEC);
+            Serial.print("\t");
+            Serial.print(right,DEC);
+            Serial.println();
+            Serial.print("detection:\t");
+            Serial.print(environment.obstacleFront?1:0,DEC);
+            Serial.print("\t");
+            Serial.print(environment.obstacleBack,DEC);
+            Serial.print("\t");
+            Serial.print(environment.obstacleLeft,DEC);
+            Serial.print("\t");
+            Serial.print(environment.obstacleRight,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLL,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLR,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLML,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLMR,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLM,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLRL,DEC);
+            Serial.print("\t");
+            Serial.print(environment.blackLRR,DEC);
+            Serial.println();
+        }
   }
 }
 
