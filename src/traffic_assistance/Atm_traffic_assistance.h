@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Automaton.h>
+#include "Atm_push_the_truck.h"
 
 class Atm_traffic_assistance: public Machine {
 
@@ -18,8 +19,8 @@ class Atm_traffic_assistance: public Machine {
  private:
   enum { EXT_IDLE, ENT_PUSH_TRUCK, ENT_FINISHED }; // ACTIONS
   int event( int id ); 
-  void action( int id ); 
-
+  void action( int id );
+  Atm_push_the_truck push_truck;
 };
 
 /*
