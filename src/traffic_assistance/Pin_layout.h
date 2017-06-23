@@ -1,3 +1,3 @@
 #pragma once
 
-const int startButton = 10;
+constexpr int start_button_pin = 2;
