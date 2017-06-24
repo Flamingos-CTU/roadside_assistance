@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Automaton.h>
+#include <Atm_servo.h>
 
 class Atm_differential_motion: public Machine {
 
@@ -12,6 +13,7 @@ class Atm_differential_motion: public Machine {
   Atm_differential_motion& trace( Stream & stream );
   Atm_differential_motion& trigger( int event );
   int state( void );
+  Atm_differential_motion& forward(int speed);
   Atm_differential_motion& command_changed( void );
   Atm_differential_motion& no_opponent( void );
   Atm_differential_motion& opponent_detected( void );
@@ -23,6 +25,8 @@ class Atm_differential_motion: public Machine {
   int event( int id ); 
   void action( int id ); 
 
+  Atm_servo left;
+  Atm_servo right;
 };
 
 /*

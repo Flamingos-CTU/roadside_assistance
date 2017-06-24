@@ -1,10 +1,7 @@
-#include <SoftwareSerial.h>
 #include <Ultrasonic.h>
 
 constexpr long scan_period = 100; //period of measurement of data
 
-// SW serial to main control board
-SoftwareSerial sensor_serial(4, 5); // RX, TX, SW serial could work only with RX mapped to pin 8, 9, 10, 11
 
 Ultrasonic ul(6, 7, 10000UL);  // left ultrasonic sensor HC-04
 Ultrasonic ur(8, 9, 10000UL);  // right ultrasonic sensor HC-04
@@ -30,7 +27,9 @@ void setup() {
   // hardware serial used for debugging
   Serial.begin(115200);
   // software serial used for communication with main board
-  sensor_serial.begin(4800);
+  Serial1.begin(115200);
+  pinMode(5, INPUT);           // set pin to input
+  digitalWrite(5, HIGH); 
 }
 
 void loop() {
@@ -51,14 +50,20 @@ void loop() {
   sens_vals[LC] = analogRead(2)>>2;
   
   long send_start = millis();
-  // send the data
-  sensor_serial.print("ST");
-  for(int i=0; i<NOS; i++){
-    sensor_serial.print(" ");
-    sensor_serial.print(sens_vals[i], DEC);
+  if(digitalRead(5)==0){
+      Serial1.begin(115200);
+      // send the data
+      Serial1.print("ST");
+      for(int i=0; i<NOS; i++){
+        Serial1.print(" ");
+        Serial1.print(sens_vals[i], DEC);
+      }
+      Serial1.println();
   }
-  sensor_serial.println();
-
+  else{
+      Serial1.end();  
+  }
+  
   //debugging output... length of measurement
   Serial.print("measure time: ");
   Serial.println(send_start-scan_start,DEC);

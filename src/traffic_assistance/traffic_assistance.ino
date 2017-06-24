@@ -1,35 +1,25 @@
 #include <Automaton.h>
 #include "Atm_traffic_assistance.h"
+#include "Atm_differential_motion.h"
 #include "Pin_layout.h"
 #include <SoftwareSerial.h>
 
 // Sketch for main Arduino board executing match finite state machine (FSM)
 
 // Match FSM
-Atm_traffic_assistance traffic_assistance;
+//Atm_traffic_assistance traffic_assistance;
 // Start button FSM
 Atm_button button;
 
 SoftwareSerial sensor_serial(8, 9); // RX, TX, SW serial to main control board
 char sensor_buffer[128];
 Atm_command sensor_board;
+Atm_differential_motion motion;
 
 constexpr uint8_t obstacleThresh = 40; // obstackle detected if closer than this distance in cm
 constexpr uint8_t blackThresh = 100; // black color when sensor output above this value 
 
-struct sens_environment{
-  bool obstacleFront;
-  bool obstacleLeft;
-  bool obstacleBack;
-  bool obstacleRight;
-  bool blackLM; // line sensor middle detecting black
-  bool blackLL; // line sensor front left detecting black
-  bool blackLR; // line sensor front right detecting black
-  bool blackLML;// line sensor front middle left detecting black
-  bool blackLMR;// line sensor front middle right detecting black
-  bool blackLRL;// line sensor rear middle left detecting black
-  bool blackLRR;// line sensor rear middle right detecting black
-  } environment;
+struct sens_environment environment;
 
 enum {
   ST,
@@ -109,19 +99,24 @@ void on_sensor_data(int idx, int v, int up)
 void setup() {
   // Init main serial line for programming and debugging purposes
   Serial.begin(115200);
-  traffic_assistance.trace(Serial);
-  button.trace(Serial);
+//  traffic_assistance.trace(Serial);
+//  button.trace(Serial);
   //sensor_board.trace(Serial);
 
   // Init serial for communication with sensor board
-  sensor_serial.begin(4800);
+//  sensor_serial.begin(4800);
   
   // Init FSMs
-  traffic_assistance.begin();
-  button.begin(start_button_pin).onPress(traffic_assistance, traffic_assistance.EVT_START);
-  sensor_board.begin(sensor_serial, sensor_buffer, sizeof(sensor_buffer))
+//  traffic_assistance.begin();
+//  button.begin(start_button_pin).onPress(traffic_assistance, traffic_assistance.EVT_START);
+  pinMode(8, OUTPUT);           // set pin to input
+  digitalWrite(8, LOW); 
+  sensor_board.begin(Serial, sensor_buffer, sizeof(sensor_buffer))
     .list(sensor_list)
     .onCommand(on_sensor_data,1);
+  motion.begin();
+  motion.trace(Serial);
+  //motion.forward(10);
 }
 
 void loop() {

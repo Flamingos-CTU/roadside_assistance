@@ -1,5 +1,5 @@
 #include "Atm_push_the_truck.h"
-
+#include "Pin_layout.h"
 /* Add optional parameters for the state machine to begin()
  * Add extra initialization code
  */
@@ -84,26 +84,6 @@ int Atm_push_the_truck::state( void ) {
 /* Public event methods
  *
  */
-
-Atm_push_the_truck& Atm_push_the_truck::left_line_2() {
-  trigger( EVT_LEFT_LINE_2 );
-  return *this;
-}
-
-Atm_push_the_truck& Atm_push_the_truck::left_line_1() {
-  trigger( EVT_LEFT_LINE_1 );
-  return *this;
-}
-
-Atm_push_the_truck& Atm_push_the_truck::turned() {
-  trigger( EVT_TURNED );
-  return *this;
-}
-
-Atm_push_the_truck& Atm_push_the_truck::black() {
-  trigger( EVT_BLACK );
-  return *this;
-}
 
 /* State trace method
  * Sets the symbol table and the default logging method for serial monitoring

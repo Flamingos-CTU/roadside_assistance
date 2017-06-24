@@ -1,10 +1,10 @@
 #include "Atm_differential_motion.h"
-
+#include "Pin_layout.h"
 /* Add optional parameters for the state machine to begin()
  * Add extra initialization code
  */
 
-Atm_differential_motion& Atm_differential_motion::begin() {
+Atm_differential_motion& Atm_differential_motion::begin( void ) {
   // clang-format off
   const static state_t state_table[] PROGMEM = {
     /*             ON_ENTER  ON_LOOP    ON_EXIT  EVT_COMMAND_CHANGED  EVT_NO_OPPONENT  EVT_OPPONENT_DETECTED  EVT_GO_IDLE  EVT_TIMEOUT  ELSE */
@@ -14,6 +14,8 @@ Atm_differential_motion& Atm_differential_motion::begin() {
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
+  left.begin(servo_left,leftServoZeroPos).step(1,10).trace(Serial);
+  right.begin(servo_right, rightServoZeroPos).step(1,10).trace(Serial);
   return *this;          
 }
 
@@ -69,6 +71,13 @@ Atm_differential_motion& Atm_differential_motion::trigger( int event ) {
 
 int Atm_differential_motion::state( void ) {
   return Machine::state();
+}
+
+Atm_differential_motion& Atm_differential_motion::forward(int speed){
+  left.position(leftServoZeroPos + speed);
+  right.position(rightServoZeroPos - speed);
+  trigger(EVT_COMMAND_CHANGED);
+  return *this;
 }
 
 /* Nothing customizable below this line                          
