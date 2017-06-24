@@ -55,8 +55,10 @@ Measured values from all the sensors and actual state of the control automaton a
 All the electronic components are supplied from a 5xAA NiMH battery pack.
 
 ### Software
-- Programovani v Arduino IDE
-- Pouzity bezne dostupne knihovny
+
+#### Tools
+
+Software used in the robot was created using Arduino IDE. We also used a lot of freely available libraries and managed them by library manager built-in in Arduino IDE. We use Git for source code, hardware design and documentation versioning.
 
 ## About us
 
