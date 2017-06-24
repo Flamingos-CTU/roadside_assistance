@@ -15,7 +15,7 @@ We want to build the robot as simple as possible yet potentially extensible to f
 
 The robot construction is build exclusively from plastic 3D-printed parts connected with metal bolts and nuts.
 These parts come from an open-hardware building kit called m-BITBEAM.
-Source files for all the parts are freely available for download on GitHub.
+Source files for all the parts are freely available for download on GitHub (https://github.com/e-Mole/m-Bitbeam_Parts_for_3Dprint).
 Any part can be easily reproduced/printed if needed.
 
 The building kit is partially compatible with LEGO Technics/Mindstorms - the split of the mounting holes is the same.
