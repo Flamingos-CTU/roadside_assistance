@@ -1,3 +1,5 @@
+![alt text](robot.jpg)
+
 # Bit assistant
 
 ## Mission (impossible?)
