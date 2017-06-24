@@ -4,18 +4,20 @@
  * Add extra initialization code
  */
 
+extern sens_environment environment;
+
 Atm_differential_motion& Atm_differential_motion::begin( void ) {
   // clang-format off
   const static state_t state_table[] PROGMEM = {
     /*             ON_ENTER  ON_LOOP    ON_EXIT  EVT_COMMAND_CHANGED  EVT_NO_OPPONENT  EVT_OPPONENT_DETECTED  EVT_GO_IDLE  EVT_TIMEOUT  ELSE */
     /*   IDLE */   ENT_IDLE,      -1,  EXT_IDLE,              MOVING,              -1,                    -1,          -1,          -1,   -1,
     /* MOVING */ ENT_MOVING,      -1,        -1,              MOVING,              -1,                 PAUSE,        IDLE,        IDLE,   -1,
-    /*  PAUSE */         -1,      -1, EXT_PAUSE,              MOVING,              -1,                    -1,        IDLE,        IDLE,   -1,
+    /*  PAUSE */  ENT_PAUSE,      -1, EXT_PAUSE,              MOVING,          MOVING,                    -1,        IDLE,        IDLE,   -1,
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
-  left.begin(servo_left,leftServoZeroPos).step(1,10).trace(Serial);
-  right.begin(servo_right, rightServoZeroPos).step(1,10).trace(Serial);
+  left.begin(servo_left,leftServoZeroPos).step(1,30).trace(Serial);
+  right.begin(servo_right, rightServoZeroPos).step(1,30).trace(Serial);
   return *this;          
 }
 
@@ -28,8 +30,14 @@ int Atm_differential_motion::event( int id ) {
     case EVT_COMMAND_CHANGED:
       return 0;
     case EVT_NO_OPPONENT:
-      return 0;
+      return 1-event(EVT_OPPONENT_DETECTED);
     case EVT_OPPONENT_DETECTED:
+      if(lspeed > 0 && rspeed < 0 && environment.obstacleFront)
+          return 1;
+      if(lspeed < 0 && rspeed > 0 && environment.obstacleBack)
+          return 1;
+      if((environment.obstacleLeft || environment.obstacleRight) && ((lspeed >0 && rspeed>0)||(lspeed<0&&rspeed<0)))
+          return 1;
       return 0;
     case EVT_GO_IDLE:
       return 0;
@@ -51,7 +59,13 @@ void Atm_differential_motion::action( int id ) {
       return;
     case ENT_MOVING:
       return;
+    case ENT_PAUSE:
+      left.position(leftServoZeroPos);
+      right.position(rightServoZeroPos);
+      return;
     case EXT_PAUSE:
+      left.position(leftServoZeroPos + lspeed);
+      right.position(rightServoZeroPos + rspeed);
       return;
   }
 }
@@ -74,9 +88,29 @@ int Atm_differential_motion::state( void ) {
 }
 
 Atm_differential_motion& Atm_differential_motion::forward(int speed){
+  lspeed = speed;
+  rspeed = -speed;
   left.position(leftServoZeroPos + speed);
   right.position(rightServoZeroPos - speed);
   trigger(EVT_COMMAND_CHANGED);
+  return *this;
+}
+
+Atm_differential_motion& Atm_differential_motion::turn(int speed){
+  lspeed = speed;
+  rspeed = speed;
+  left.position(leftServoZeroPos + speed);
+  right.position(rightServoZeroPos + speed);
+  trigger(EVT_COMMAND_CHANGED);
+  return *this;
+}
+
+Atm_differential_motion& Atm_differential_motion::stop(){
+  lspeed = 0;
+  rspeed = 0;
+  left.position(leftServoZeroPos);
+  right.position(rightServoZeroPos);
+  trigger(EVT_GO_IDLE);
   return *this;
 }
 
@@ -122,6 +156,8 @@ Atm_differential_motion& Atm_differential_motion::trace( Stream & stream ) {
     "DIFFERENTIAL_MOTION\0EVT_COMMAND_CHANGED\0EVT_NO_OPPONENT\0EVT_OPPONENT_DETECTED\0EVT_GO_IDLE\0EVT_TIMEOUT\0ELSE\0IDLE\0MOVING\0PAUSE" );
   return *this;
 }
+
+
 
 
 

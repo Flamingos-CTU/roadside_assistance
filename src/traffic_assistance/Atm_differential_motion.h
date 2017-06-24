@@ -14,6 +14,8 @@ class Atm_differential_motion: public Machine {
   Atm_differential_motion& trigger( int event );
   int state( void );
   Atm_differential_motion& forward(int speed);
+  Atm_differential_motion& turn(int speed);
+  Atm_differential_motion& stop( void);
   Atm_differential_motion& command_changed( void );
   Atm_differential_motion& no_opponent( void );
   Atm_differential_motion& opponent_detected( void );
@@ -21,12 +23,14 @@ class Atm_differential_motion: public Machine {
   Atm_differential_motion& timeout( void );
 
  private:
-  enum { ENT_IDLE, EXT_IDLE, ENT_MOVING, EXT_PAUSE }; // ACTIONS
+  enum { ENT_IDLE, EXT_IDLE, ENT_MOVING, ENT_PAUSE, EXT_PAUSE }; // ACTIONS
   int event( int id ); 
   void action( int id ); 
 
   Atm_servo left;
   Atm_servo right;
+  int lspeed=0;
+  int rspeed=0;
 };
 
 /*
@@ -45,8 +49,9 @@ Automaton::ATML::begin - Automaton Markup Language
         <EVT_GO_IDLE>IDLE</EVT_GO_IDLE>
         <EVT_TIMEOUT>IDLE</EVT_TIMEOUT>
       </MOVING>
-      <PAUSE index="2" on_exit="EXT_PAUSE">
+      <PAUSE index="2" on_enter="ENT_PAUSE" on_exit="EXT_PAUSE">
         <EVT_COMMAND_CHANGED>MOVING</EVT_COMMAND_CHANGED>
+        <EVT_NO_OPPONENT>MOVING</EVT_NO_OPPONENT>
         <EVT_GO_IDLE>IDLE</EVT_GO_IDLE>
         <EVT_TIMEOUT>IDLE</EVT_TIMEOUT>
       </PAUSE>

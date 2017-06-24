@@ -1,7 +1,9 @@
 #include "Atm_traffic_assistance.h"
+#include "Atm_differential_motion.h"
 
-long matchTimeMs = 5000;
+long matchTimeMs = 128000;
 
+extern Atm_differential_motion motion;
 /* Add optional parameters for the state machine to begin()
  * Add extra initialization code
  */
@@ -44,8 +46,10 @@ void Atm_traffic_assistance::action( int id ) {
       timer.begin( matchTimeMs ).start().onFinish(*this, EVT_MATCH_END);
       return;
     case ENT_PUSH_TRUCK:
+      push_truck.begin().trace(Serial);
       return;
     case ENT_FINISHED:
+      motion.stop();
       return;
   }
 }

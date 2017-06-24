@@ -7,7 +7,7 @@
 // Sketch for main Arduino board executing match finite state machine (FSM)
 
 // Match FSM
-//Atm_traffic_assistance traffic_assistance;
+Atm_traffic_assistance traffic_assistance;
 // Start button FSM
 Atm_button button;
 
@@ -99,16 +99,12 @@ void on_sensor_data(int idx, int v, int up)
 void setup() {
   // Init main serial line for programming and debugging purposes
   Serial.begin(115200);
-//  traffic_assistance.trace(Serial);
-//  button.trace(Serial);
-  //sensor_board.trace(Serial);
-
-  // Init serial for communication with sensor board
-//  sensor_serial.begin(4800);
-  
+  traffic_assistance.trace(Serial);
+  button.trace(Serial);
+ 
   // Init FSMs
-//  traffic_assistance.begin();
-//  button.begin(start_button_pin).onPress(traffic_assistance, traffic_assistance.EVT_START);
+  traffic_assistance.begin();
+  button.begin(start_button_pin).onPress(traffic_assistance, traffic_assistance.EVT_START);
   pinMode(8, OUTPUT);           // set pin to input
   digitalWrite(8, LOW); 
   sensor_board.begin(Serial, sensor_buffer, sizeof(sensor_buffer))
@@ -116,7 +112,6 @@ void setup() {
     .onCommand(on_sensor_data,1);
   motion.begin();
   motion.trace(Serial);
-  //motion.forward(10);
 }
 
 void loop() {

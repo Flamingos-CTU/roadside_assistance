@@ -1,10 +1,12 @@
 #include "Atm_push_the_truck.h"
 #include "Pin_layout.h"
+#include "Atm_differential_motion.h"
 /* Add optional parameters for the state machine to begin()
  * Add extra initialization code
  */
 
 extern struct sens_environment environment;
+extern Atm_differential_motion motion;
 
 Atm_push_the_truck& Atm_push_the_truck::begin() {
   // clang-format off
@@ -33,7 +35,7 @@ int Atm_push_the_truck::event( int id ) {
     case EVT_LEFT_LINE_1:
       return environment.blackLL?0:1;
     case EVT_TURNED:
-      return environment.blackLMR?1:0;
+      return environment.blackLMR?0:1;
     case EVT_BLACK:
       return environment.blackLM?1:0;
   }
@@ -47,11 +49,13 @@ int Atm_push_the_truck::event( int id ) {
 void Atm_push_the_truck::action( int id ) {
   switch ( id ) {
     case ENT_GOING_TO_ROAD:
-      
+      motion.forward(default_speed);
       return;
     case ENT_TURNING_RIGHT:
+      motion.turn(default_speed);
       return;
     case ENT_FOLLOWING_THE_ROAD:
+      motion.stop();
       return;
     case ENT_PUSHING_THE_TRUCK:
       return;

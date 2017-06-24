@@ -21,3 +21,5 @@ struct sens_environment{
   bool blackLRR;// line sensor rear middle right detecting black
   };
 
+  constexpr int default_speed=10;
+
