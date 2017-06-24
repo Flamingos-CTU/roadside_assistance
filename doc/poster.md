@@ -56,6 +56,15 @@ All the electronic components are supplied from a 5xAA NiMH battery pack.
 
 ### Software
 
+The robot is based on the reactive paradigm. There is no environment map in the robot's memory. Just go ahead and follow the sensors' values.
+
+Robot's behavior is implemented using finite state machines. We used feature-rich and powerful library Automaton. It also provides an extension for servo control. We implemented several separated automatons to control the robot:
+* match automaton - starts the robot, check end of the match, handles sensor data received from sensor board,
+* motion control automaton - drive servos and check the opponent to avoid a collision,
+* automaton for a particular task, e.g. push_the_truck automaton handles such states as go_to_the_road, turn_on_the road, follow_the_road and push_the_truck.
+
+Our software is available under the open source license. Go to Github and check it:) (https://github.com/Flamingos-CTU/roadside_assistance)
+
 #### Tools
 
 Software used in the robot was created using Arduino IDE. We also used a lot of freely available libraries and managed them by library manager built-in in Arduino IDE. We use Git for source code, hardware design and documentation versioning.
