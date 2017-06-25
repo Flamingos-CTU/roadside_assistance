@@ -16,8 +16,8 @@ Atm_differential_motion& Atm_differential_motion::begin( void ) {
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
-  left.begin(servo_left,leftServoZeroPos).step(1,30);
-  right.begin(servo_right, rightServoZeroPos).step(1,30);
+  left.begin(servo_left,leftServoZeroPos).step(1,30).trace(Serial);
+  right.begin(servo_right, rightServoZeroPos).step(1,30).trace(Serial);
   return *this;          
 }
 

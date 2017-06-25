@@ -12,13 +12,13 @@ Atm_button button;
 
 char sensor_buffer[40];
 Atm_command sensor_board;
-Atm_timer sensor_data_timer;
+//Atm_timer sensor_data_timer;
 Atm_differential_motion motion;
 
 constexpr uint16_t sensor_data_timeout = 1000; // ms
 
 constexpr uint8_t obstacleThresh = 40; // obstackle detected if closer than this distance in cm
-constexpr uint8_t blackThresh = 11; // black color when sensor output above this value 
+constexpr uint8_t blackThresh = 25; // black color when sensor output above this value 
 
 struct sens_environment environment;
 

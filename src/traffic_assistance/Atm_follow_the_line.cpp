@@ -38,6 +38,8 @@ int Atm_follow_the_line::event( int id ) {
           return 1;
       return 0;
     case EVT_ON_WHITE:
+      if(!environment.blackLML)
+          return 1;
       return 0;
   }
   return 0;
@@ -56,10 +58,10 @@ void Atm_follow_the_line::action( int id ) {
       motion.forward(default_speed);
       return;
     case ENT_TURN_LEFT:
-      motion.turn(-default_speed);
+      motion.turn(-default_speed/2);
       return;
     case ENT_TURN_RIGHT:
-      motion.turn(default_speed);
+      motion.turn(default_speed/2);
       return;
   }
 }
