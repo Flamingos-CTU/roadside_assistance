@@ -15,10 +15,11 @@ Atm_command sensor_board;
 //Atm_timer sensor_data_timer;
 Atm_differential_motion motion;
 
-constexpr uint16_t sensor_data_timeout = 1000; // ms
+//constexpr uint16_t sensor_data_timeout = 1000; // ms
+constexpr uint16_t sharpThresh=200;
 
 constexpr uint8_t obstacleThresh = 40; // obstackle detected if closer than this distance in cm
-constexpr uint8_t blackThresh = 25; // black color when sensor output above this value 
+constexpr uint8_t blackThresh = 20; // black color when sensor output above this value 
 
 struct sens_environment environment;
 
@@ -54,13 +55,15 @@ void on_sensor_data(int idx, int v, int up)
         environment.blackLR = atoi(sensor_board.arg(LR)) > blackThresh;
         environment.blackLML = atoi(sensor_board.arg(LML)) > blackThresh;
         environment.blackLMR = atoi(sensor_board.arg(LMR)) > blackThresh;        
+        environment.sharpLObst = analogRead(0) > sharpThresh;
+        environment.sharpRObst = analogRead(1) > sharpThresh;
         uint8_t right = analogRead(3) >> 2;
         uint8_t left = analogRead(2) >> 2;
         environment.blackLRR = right > blackThresh;
         environment.blackLRL = left > blackThresh;
         if(((++loopCounter) & 0x1F) == 0 ){
             Serial.println();
-            Serial.println("sensor_board:\tUF\tUB\tUL\tUR\tLL\tLR\tLML\tLMR\tLC\tLRL\tLRR");
+            Serial.println("sensor_board:\tUF\tUB\tUL\tUR\tLL\tLR\tLML\tLMR\tLC\tLRL\tLRR\tS1\tS2");
             Serial.print("raw_values:");
             for(uint8_t i=1;i<=9;i++){
                 Serial.print("\t");
@@ -93,6 +96,10 @@ void on_sensor_data(int idx, int v, int up)
             Serial.print(environment.blackLRL,DEC);
             Serial.print("\t");
             Serial.print(environment.blackLRR,DEC);
+            Serial.print("\t");
+            Serial.print(analogRead(0),DEC);
+            Serial.print("\t");
+            Serial.print(analogRead(1),DEC);
             Serial.println();
         }
   }

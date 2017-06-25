@@ -15,11 +15,12 @@ class Atm_push_the_truck: public Machine {
   int state( void );
 
  private:
-  enum { ENT_GOING_TO_ROAD, ENT_TURNING_RIGHT, ENT_FOLLOWING_THE_ROAD, ENT_PUSHING_THE_TRUCK, ENT_FINISHED }; // ACTIONS
+  enum { ENT_GOING_TO_ROAD, ENT_TURNING_RIGHT, ENT_FOLLOWING_THE_ROAD, EXT_FOLLOWING_THE_ROAD, ENT_PUSHING_THE_TRUCK, ENT_FINISHED }; // ACTIONS
   int event( int id ); 
   void action( int id ); 
   void Going_to_road();
   Atm_follow_the_line follower;
+  long leftRoadMillis=0;
 };
 
 /*
@@ -42,7 +43,7 @@ Automaton::ATML::begin - Automaton Markup Language
       <TURNING_RIGHT index="2" on_enter="ENT_TURNING_RIGHT">
         <EVT_TURNED>FOLLOWING_THE_ROAD</EVT_TURNED>
       </TURNING_RIGHT>
-      <FOLLOWING_THE_ROAD index="3" on_enter="ENT_FOLLOWING_THE_ROAD">
+      <FOLLOWING_THE_ROAD index="3" on_enter="ENT_FOLLOWING_THE_ROAD" on_exit="EXT_FOLLOWING_THE_ROAD">
         <EVT_LEFT_LINE_1>PUSHING_THE_TRUCK</EVT_LEFT_LINE_1>
       </FOLLOWING_THE_ROAD>
       <PUSHING_THE_TRUCK index="4" on_enter="ENT_PUSHING_THE_TRUCK">

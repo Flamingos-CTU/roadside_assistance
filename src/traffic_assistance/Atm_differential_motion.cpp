@@ -32,11 +32,11 @@ int Atm_differential_motion::event( int id ) {
     case EVT_NO_OPPONENT:
       return 1-event(EVT_OPPONENT_DETECTED);
     case EVT_OPPONENT_DETECTED:
-      if(lspeed > 0 && rspeed < 0 && environment.obstacleFront)
+      if(lspeed > 0 && rspeed < 0 && (environment.obstacleFront || environment.sharpLObst || environment.sharpRObst))
           return 1;
       if(lspeed < 0 && rspeed > 0 && environment.obstacleBack)
           return 1;
-      if((environment.obstacleLeft || environment.obstacleRight) && ((lspeed >0 && rspeed>0)||(lspeed<0&&rspeed<0)))
+      if((environment.obstacleLeft || environment.obstacleRight || environment.obstacleFront || environment.sharpLObst || environment.sharpRObst) && ((lspeed >0 && rspeed>0)||(lspeed<0&&rspeed<0)))
           return 1;
       return 0;
     case EVT_GO_IDLE:

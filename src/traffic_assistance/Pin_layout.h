@@ -19,6 +19,8 @@ struct sens_environment{
   bool blackLMR;// line sensor front middle right detecting black
   bool blackLRL;// line sensor rear middle left detecting black
   bool blackLRR;// line sensor rear middle right detecting black
+  bool sharpLObst;
+  bool sharpRObst;
   };
 
   constexpr int default_speed=10;

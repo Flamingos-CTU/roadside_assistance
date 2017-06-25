@@ -20,6 +20,7 @@ class Atm_follow_the_line: public Machine {
   int event( int id ); 
   void action( int id ); 
 
+
 };
 
 /*
