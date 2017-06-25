@@ -29,8 +29,8 @@ class Atm_differential_motion: public Machine {
 
   Atm_servo left;
   Atm_servo right;
-  int lspeed=0;
-  int rspeed=0;
+  int8_t lspeed=0;
+  int8_t rspeed=0;
 };
 
 /*

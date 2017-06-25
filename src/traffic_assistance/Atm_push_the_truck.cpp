@@ -17,7 +17,7 @@ Atm_push_the_truck& Atm_push_the_truck::begin() {
     /*      TURNING_RIGHT */      ENT_TURNING_RIGHT,      -1,      -1,              -1,                -1, FOLLOWING_THE_ROAD,            -1,            -1,
     /* FOLLOWING_THE_ROAD */ ENT_FOLLOWING_THE_ROAD,      -1,      -1,              -1, PUSHING_THE_TRUCK,                 -1,            -1,            -1,
     /*  PUSHING_THE_TRUCK */  ENT_PUSHING_THE_TRUCK,      -1,      -1,        FINISHED,                -1,                 -1,            -1,            -1,
-    /*           FINISHED */           ENT_FINISHED,      -1,      -1,        FINISHED,          FINISHED,           FINISHED,      FINISHED,      FINISHED,
+    /*           FINISHED */           ENT_FINISHED,      -1,      -1,        -1,          -1,           -1,      -1,      -1,
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
@@ -35,7 +35,7 @@ int Atm_push_the_truck::event( int id ) {
     case EVT_LEFT_LINE_1:
       return environment.blackLL?0:1;
     case EVT_TURNED:
-      return environment.blackLMR?0:1;
+      return environment.blackLR?0:1;
     case EVT_BLACK:
       return environment.blackLM?1:0;
   }
@@ -52,14 +52,19 @@ void Atm_push_the_truck::action( int id ) {
       motion.forward(default_speed);
       return;
     case ENT_TURNING_RIGHT:
-      motion.turn(default_speed);
+      motion.stop();
+      motion.turn(default_speed/4);
       return;
     case ENT_FOLLOWING_THE_ROAD:
       motion.stop();
+      follower.begin().trace(Serial).start();
       return;
     case ENT_PUSHING_THE_TRUCK:
+      follower.stop();
+      motion.forward(default_speed);
       return;
     case ENT_FINISHED:
+      motion.stop();
       return;
   }
 }

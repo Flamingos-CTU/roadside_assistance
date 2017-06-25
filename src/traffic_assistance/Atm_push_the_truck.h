@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Automaton.h>
+#include "Atm_follow_the_line.h"
 
 class Atm_push_the_truck: public Machine {
 
@@ -18,6 +19,7 @@ class Atm_push_the_truck: public Machine {
   int event( int id ); 
   void action( int id ); 
   void Going_to_road();
+  Atm_follow_the_line follower;
 };
 
 /*

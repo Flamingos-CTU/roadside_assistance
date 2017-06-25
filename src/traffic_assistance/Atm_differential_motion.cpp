@@ -16,8 +16,8 @@ Atm_differential_motion& Atm_differential_motion::begin( void ) {
   };
   // clang-format on
   Machine::begin( state_table, ELSE );
-  left.begin(servo_left,leftServoZeroPos).step(1,30).trace(Serial);
-  right.begin(servo_right, rightServoZeroPos).step(1,30).trace(Serial);
+  left.begin(servo_left,leftServoZeroPos).step(1,30);
+  right.begin(servo_right, rightServoZeroPos).step(1,30);
   return *this;          
 }
 
@@ -60,12 +60,12 @@ void Atm_differential_motion::action( int id ) {
     case ENT_MOVING:
       return;
     case ENT_PAUSE:
-      left.position(leftServoZeroPos);
-      right.position(rightServoZeroPos);
+      left.step(180,0).position(leftServoZeroPos);
+      right.step(180,0).position(rightServoZeroPos);
       return;
     case EXT_PAUSE:
-      left.position(leftServoZeroPos + lspeed);
-      right.position(rightServoZeroPos + rspeed);
+      left.step(1,30).position(leftServoZeroPos + lspeed);
+      right.step(1,30).position(rightServoZeroPos + rspeed);
       return;
   }
 }
@@ -90,8 +90,8 @@ int Atm_differential_motion::state( void ) {
 Atm_differential_motion& Atm_differential_motion::forward(int speed){
   lspeed = speed;
   rspeed = -speed;
-  left.position(leftServoZeroPos + speed);
-  right.position(rightServoZeroPos - speed);
+  left.step(1,30).position(leftServoZeroPos + speed);
+  right.step(1,30).position(rightServoZeroPos - speed);
   trigger(EVT_COMMAND_CHANGED);
   return *this;
 }
@@ -99,8 +99,9 @@ Atm_differential_motion& Atm_differential_motion::forward(int speed){
 Atm_differential_motion& Atm_differential_motion::turn(int speed){
   lspeed = speed;
   rspeed = speed;
-  left.position(leftServoZeroPos + speed);
-  right.position(rightServoZeroPos + speed);
+  
+  left.step(1,30).position(leftServoZeroPos + speed);
+  right.step(1,30).position(rightServoZeroPos + speed);
   trigger(EVT_COMMAND_CHANGED);
   return *this;
 }
@@ -108,8 +109,8 @@ Atm_differential_motion& Atm_differential_motion::turn(int speed){
 Atm_differential_motion& Atm_differential_motion::stop(){
   lspeed = 0;
   rspeed = 0;
-  left.position(leftServoZeroPos);
-  right.position(rightServoZeroPos);
+  left.step(180,0).position(leftServoZeroPos);
+  right.step(180,0).position(rightServoZeroPos);
   trigger(EVT_GO_IDLE);
   return *this;
 }

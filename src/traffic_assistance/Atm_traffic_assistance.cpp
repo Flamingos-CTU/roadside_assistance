@@ -1,7 +1,7 @@
 #include "Atm_traffic_assistance.h"
 #include "Atm_differential_motion.h"
 
-long matchTimeMs = 128000;
+constexpr long matchTimeMs = 128000;
 
 extern Atm_differential_motion motion;
 /* Add optional parameters for the state machine to begin()

@@ -2,7 +2,6 @@
 #include "Atm_traffic_assistance.h"
 #include "Atm_differential_motion.h"
 #include "Pin_layout.h"
-#include <SoftwareSerial.h>
 
 // Sketch for main Arduino board executing match finite state machine (FSM)
 
@@ -11,13 +10,15 @@ Atm_traffic_assistance traffic_assistance;
 // Start button FSM
 Atm_button button;
 
-SoftwareSerial sensor_serial(8, 9); // RX, TX, SW serial to main control board
-char sensor_buffer[128];
+char sensor_buffer[40];
 Atm_command sensor_board;
+Atm_timer sensor_data_timer;
 Atm_differential_motion motion;
 
+constexpr uint16_t sensor_data_timeout = 1000; // ms
+
 constexpr uint8_t obstacleThresh = 40; // obstackle detected if closer than this distance in cm
-constexpr uint8_t blackThresh = 100; // black color when sensor output above this value 
+constexpr uint8_t blackThresh = 11; // black color when sensor output above this value 
 
 struct sens_environment environment;
 
@@ -43,6 +44,7 @@ void on_sensor_data(int idx, int v, int up)
   static uint8_t loopCounter=0;
   switch(v) {
     case ST:
+        //sensor_data_timer.start();
         environment.obstacleFront = atoi(sensor_board.arg(UF)) > 0 && atoi(sensor_board.arg(UF)) < obstacleThresh;
         environment.obstacleBack = atoi(sensor_board.arg(UB)) > 0 && atoi(sensor_board.arg(UB)) < obstacleThresh;
         environment.obstacleLeft = atoi(sensor_board.arg(UL)) > 0 && atoi(sensor_board.arg(UL)) < obstacleThresh;
@@ -104,12 +106,18 @@ void setup() {
  
   // Init FSMs
   traffic_assistance.begin();
-  button.begin(start_button_pin).onPress(traffic_assistance, traffic_assistance.EVT_START);
+  //sensor_data_timer.begin(sensor_data_timeout);
+  //sensor_data_timer.start();
+  
+  button.begin(start_button_pin).onPress([] (int idx, int v, int up) {
+    traffic_assistance.trigger(traffic_assistance.EVT_START);
+  });
   pinMode(8, OUTPUT);           // set pin to input
   digitalWrite(8, LOW); 
   sensor_board.begin(Serial, sensor_buffer, sizeof(sensor_buffer))
     .list(sensor_list)
     .onCommand(on_sensor_data,1);
+  //sensor_data_timer.trace(Serial);
   motion.begin();
   motion.trace(Serial);
 }
